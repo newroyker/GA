@@ -14,4 +14,10 @@ class AlgorithmsSpec extends FlatSpec with MustMatchers {
     "lis" should "return longest increasing sub sequence" in {
         lis(Seq(5, 7, 4, -3, 9, 1, 10, 4, 5, 8, 9, 3)) must be (6)
     }
+
+    "lcs" should "return longest common sub sequence" in {
+        lcs(
+            Seq('B', 'C', 'D', 'B', 'C', 'D', 'A'), 
+            Seq('A', 'B', 'E', 'C', 'B', 'A', 'B')) must be (4)
+    }
 }

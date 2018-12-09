@@ -15,4 +15,6 @@ object Algorithms {
         }
         ls.max
     }
+
+    def lcs(xs: Seq[Char], ys: Seq[Char]): Int = ???
 }
