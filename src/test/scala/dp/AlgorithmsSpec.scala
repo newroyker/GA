@@ -24,4 +24,8 @@ class AlgorithmsSpec extends FlatSpec with MustMatchers {
             Seq('A', 'B', 'E', 'C', 'B', 'A'),
             Seq('B', 'C', 'D', 'B', 'C', 'D', 'A')) must be (4)
     }
+
+    "csms" should "return max sum of contig subseq" in {
+        csms(Seq(5, 15, -30, 10, -5, 40, 10)) must be (55)
+    }
 }

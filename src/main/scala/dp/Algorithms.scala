@@ -62,4 +62,21 @@ object Algorithms {
 
         ls(xs.size)(ys.size)
     }
+
+   /**
+    *   Subproblem: m(i) is the max sum of contig subseq including a(i)
+    *   Recurrence: m(i) = a(i) + max( m(i-1) , 0 )
+    *   O(n)
+    */
+    def csms(as: Seq[Int]): Int = {
+        val mis: ArrayBuffer[Int] = ArrayBuffer.empty[Int]
+        for(i <- as.indices){
+            if(i == 0) 
+                mis += as(i)
+            else
+                mis += as(i) + math.max(mis(i-1), 0)
+        }
+        mis.max
+    }
+
 }
