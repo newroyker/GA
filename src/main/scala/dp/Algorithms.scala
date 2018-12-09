@@ -1,20 +1,65 @@
 package dp
 
-object Algorithms {
-    def fibonacci(n: Int): Long = if(n < 0) 1L else 
-        (1 until n)
-            .foldLeft((1L,1L)){case ((li_2, li_1), _) => (li_1, li_1 + li_2)}
-            ._2
+import scala.collection.mutable.ArrayBuffer
 
-    def lis(as: Seq[Int]): Int = {
-        val ls = as.indices.foldLeft(Seq.empty[Int]){ case (lis, i) => 
-            val max: Int = (0 to i).foldLeft(1){ case (m, j) => 
-                if(as(j) < as(i) && m < (lis(j)+1)) lis(j)+1 else m
+object Algorithms {
+
+   /**
+    *   Subproblem: f(i) is the i-th Fibonacci
+    *   Recurrence: f(i) = f(i-1) + f(i-2)
+    *   O(n)
+    */
+    def fibonacci(n: Int): Long = 
+        if (n == 0) 0L
+        else if (n == 1) 1L
+        else {
+            var fi_2 = 0L
+            var fi_1 = 1L
+            for(i <- 2 to n){
+                val temp = fi_1
+                fi_1 = fi_1 + fi_2
+                fi_2 = temp
             }
-            lis :+ max
+            fi_1
         }
-        ls.max
+
+   /**
+    *   Subproblem: l(i) is the lis including a(i)
+    *   Recurrence: l(i) = 1 + max[ l(j) where j < i and a(j) < a(i) ]
+    *   O(n^2)
+    */
+    def lis(as: Seq[Int]): Int = {
+        val lis: ArrayBuffer[Int] = ArrayBuffer.empty[Int]
+        for(i <- as.indices){
+            var max = 1
+            for(j <- 0 to i){
+                if(as(j) < as(i) && lis(j) + 1 > max) 
+                    max = 1 + lis(j)
+            }
+            lis += max
+        }
+        lis.max
     }
 
-    def lcs(xs: Seq[Char], ys: Seq[Char]): Int = ???
+   /**
+    *   Subproblem: l(i,j) is the lcs in first i of x and first j in y
+    *   Recurrence: l(i,j) = 
+    *                           1 + l(i-1, j-1), if x(i) == y(j)
+    *                           max(l(i-1,j) l(i,j-1)), if x(i) != y(j) 
+    *   O(n^2)
+    */
+    def lcs(xs: Seq[Char], ys: Seq[Char]): Int = {
+        val ls: ArrayBuffer[ArrayBuffer[Int]] = ArrayBuffer.fill(xs.size+1)(ArrayBuffer.fill(ys.size+1)(0))
+    
+        for(i <- 1 to xs.size){
+            for(j <- 1 to ys.size){
+                if(xs(i-1) == ys(j-1))
+                    ls(i)(j) = 1+ ls(i-1)(j-1)
+                else
+                    ls(i)(j) = math.max(ls(i-1)(j),ls(i)(j-1)  )
+            }
+        }
+
+        ls(xs.size)(ys.size)
+    }
 }

@@ -5,7 +5,7 @@ import Algorithms._
 
 class AlgorithmsSpec extends FlatSpec with MustMatchers {
     "fibonacci" should "return fib(n) where n = [0,7]" in {
-        val tests: Map[Int, Long] = Map(0 -> 1L, 1 -> 1L, 2 -> 2L, 3 -> 3L, 4 -> 5L, 5 -> 8L, 6 -> 13L, 7 -> 21L)
+        val tests: Map[Int, Long] = Map(0 -> 0L, 1 -> 1L, 2 -> 1L, 3 -> 2L, 4 -> 3L, 5 -> 5L, 6 -> 8L, 7 -> 13L)
         tests.foreach{
             case (k,v) => fibonacci(k) must be (v)
         }
@@ -18,6 +18,10 @@ class AlgorithmsSpec extends FlatSpec with MustMatchers {
     "lcs" should "return longest common sub sequence" in {
         lcs(
             Seq('B', 'C', 'D', 'B', 'C', 'D', 'A'), 
-            Seq('A', 'B', 'E', 'C', 'B', 'A', 'B')) must be (4)
+            Seq('A', 'B', 'E', 'C', 'B', 'A')) must be (4)
+
+        lcs(
+            Seq('A', 'B', 'E', 'C', 'B', 'A'),
+            Seq('B', 'C', 'D', 'B', 'C', 'D', 'A')) must be (4)
     }
 }
