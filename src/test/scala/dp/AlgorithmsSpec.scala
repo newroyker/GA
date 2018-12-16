@@ -42,5 +42,7 @@ class AlgorithmsSpec extends FlatSpec with MustMatchers {
     lccs("abcdxyz".toSeq, "xyzabcd".toSeq) must be(4)
 
     lccs("zxabcdezy".toSeq, "yzabcdezx".toSeq) must be(6)
+
+    lccs("abcdaf".toSeq, "zbcdf".toSeq) must be(3)
   }
 }

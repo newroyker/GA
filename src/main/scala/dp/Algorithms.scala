@@ -87,10 +87,25 @@ object Algorithms {
   def sow(cs: Seq[Char], dict: Seq[Char] => Boolean): Boolean = ???
 
   /**
-    * Sub-problem:
-    * Recurrence:
-    * O()
+    * Sub-problem: l(i,j) is the lccs in first i of x and first j in y
+    * Recurrence: l(i,j) =
+    *   1 + l(i-1, j-1), if x(i) == y(j)
+    *   0, if x(i) != y(j)
+    * O(nˆ2)
     */
-  def lccs(xs: Seq[Char], ys: Seq[Char]): Int = ???
+  def lccs(xs: Seq[Char], ys: Seq[Char]): Int = {
+    val ls: ArrayBuffer[ArrayBuffer[Int]] = ArrayBuffer.fill(xs.size + 1)(ArrayBuffer.fill(ys.size + 1)(0))
+
+    for (i <- 1 to xs.size) {
+      for (j <- 1 to ys.size) {
+        if (xs(i - 1) == ys(j - 1))
+          ls(i)(j) = 1 + ls(i - 1)(j - 1)
+        else
+          ls(i)(j) = 0
+      }
+    }
+
+    ls.map(_.max).max
+  }
 
 }
