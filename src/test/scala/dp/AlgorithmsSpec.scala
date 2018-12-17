@@ -29,9 +29,9 @@ class AlgorithmsSpec extends FlatSpec with MustMatchers {
     csms(Seq(5, 15, -30, 10, -5, 40, 10)) must be(55)
   }
 
-  "sow" should "return is a string is valid" in {
+  "sow" should "return if a string is made up of words" in {
     def dict(cs: Seq[Char]): Boolean =
-      Set("it", "was", "the", "best", "of", "times").map(_.toSeq).contains(cs)
+      Set("i", "a", "it", "was", "the", "best", "of", "times").map(_.toSeq).contains(cs)
 
     sow("itwasthebestoftimes", dict) must be(true)
 
