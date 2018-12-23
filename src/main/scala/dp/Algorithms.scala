@@ -128,4 +128,46 @@ object Algorithms {
     ls.map(_.max).max
   }
 
+  /**
+    * Sub-problem: k(i,b) = max value using i objects and total weight <= b
+    * Recurrence: k(i,b) =
+    *     max{ k(i-1, b-w_i) + v_i, k(i-1, b)}, if w_i <= b
+    *     k(i-1, b), else
+    * O(n*B)
+    */
+  def ksnr(ws: Seq[Int], vs: Seq[Int], bound: Int): Int = {
+    val ks: ArrayBuffer[ArrayBuffer[Int]] =
+      ArrayBuffer.fill(ws.size + 1)(ArrayBuffer.fill(bound + 1)(0))
+
+    for(i <- 1 to ws.size){
+      for(b <- 1 to bound){
+        ks(i)(b) =
+          if(ws(i-1) <= b)
+            math.max(ks(i-1)(b-ws(i-1)) + vs(i-1), ks(i-1)(b))
+          else
+            ks(i-1)(b)
+      }
+    }
+    ks(ws.size)(bound)
+  }
+
+  /**
+    * Sub-problem: k(b) = max value using objects and total weight <= b
+    * Recurrence: k(b) =
+    *     max{ v_i + k(b - w_i)}, if w_i <= b for all i
+    *     0, else
+    * O(n*B)
+    */
+  def ksr(ws: Seq[Int], vs: Seq[Int], bound: Int): Int = {
+    val ks: ArrayBuffer[Int] = ArrayBuffer.fill(bound + 1)(0)
+
+    for(b <- 0 to bound){
+      for(i <- ws.indices){
+        if(ws(i) <= b)
+          ks(b) = math.max(ks(b), vs(i) + ks(b - ws(i)))
+      }
+    }
+    ks(bound)
+  }
+
 }

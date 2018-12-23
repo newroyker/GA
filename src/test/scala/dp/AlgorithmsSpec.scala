@@ -45,4 +45,12 @@ class AlgorithmsSpec extends FlatSpec with MustMatchers {
 
     lccs("abcdaf".toSeq, "zbcdf".toSeq) must be(3)
   }
+
+  "ksnr" should "return max value" in {
+    ksnr(Seq(15,12,10,5), Seq(15,10,8,1), 22) must be (18)
+  }
+
+  "ksr" should "return max value" in {
+    ksr(Seq(15,12,10,5), Seq(15,10,8,1), 22) must be (18)
+  }
 }

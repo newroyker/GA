@@ -6,3 +6,5 @@
 * Contiguous Sub-sequence of Max Sum
 * String of words
 * Longest Common Substring
+* Knapsack Repetition
+* Knapsack No Repetition 
