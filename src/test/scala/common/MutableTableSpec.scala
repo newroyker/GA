@@ -1,3 +1,5 @@
+package common
+
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class MutableTableSpec extends FlatSpec with MustMatchers {
@@ -6,7 +8,6 @@ class MutableTableSpec extends FlatSpec with MustMatchers {
     val r = MutableRow[Int](5)
 
     r.toString must be("( , , , , )")
-
   }
 
   it should "allow setting values" in {
@@ -16,9 +17,9 @@ class MutableTableSpec extends FlatSpec with MustMatchers {
     r.toString must be("( , ,7, , )")
 
     r.get(2) must be(Some(7))
+    r(2) must be(7)
 
     r.get(0) must be(None)
-
   }
 
   it should "allow filling" in {
@@ -29,9 +30,18 @@ class MutableTableSpec extends FlatSpec with MustMatchers {
     r.toString must be("(-1,-1,-1,-1,-1)")
 
     (0 until s).foreach {
-      i => r.get(i) must be(Some(-1))
+      i => r(i) must be(-1)
     }
 
+  }
+
+  it should "return row's max" in {
+    val r = MutableRow[Int](3)
+    r.set(0, 1)
+    r.set(1, 10)
+    r.set(2, -1)
+
+    r.max must be (10)
   }
 
   "MutableTable" should "be empty on creation" in {
@@ -57,9 +67,9 @@ class MutableTableSpec extends FlatSpec with MustMatchers {
          | ( , , , , )]""".stripMargin)
 
     t.get(1, 2) must be(Some(-1))
+    t(1, 2) must be(-1)
 
     t.get(1, 1) must be(None)
-
   }
 
   it should "allow filling a row" in {
@@ -74,7 +84,7 @@ class MutableTableSpec extends FlatSpec with MustMatchers {
          | ( , , , , )]""".stripMargin)
 
     (0 until 5).foreach {
-      c => t.get(1, c) must be(Some(-1))
+      c => t(1, c) must be(-1)
     }
 
     (0 until 5).foreach {
@@ -95,7 +105,7 @@ class MutableTableSpec extends FlatSpec with MustMatchers {
          | ( ,-1, , , )]""".stripMargin)
 
     (0 until 4).foreach {
-      r => t.get(r, 1) must be(Some(-1))
+      r => t(r, 1) must be(-1)
     }
 
     (0 until 4).foreach {
@@ -116,11 +126,20 @@ class MutableTableSpec extends FlatSpec with MustMatchers {
          | (0, , , , )]""".stripMargin)
 
     (0 until 4).foreach {
-      r => t.get(r, 0) must be(Some(0))
+      r => t(r, 0) must be(0)
     }
 
     (0 until 5).foreach {
-      c => t.get(0, c) must be(Some(0))
+      c => t(0, c) must be(0)
     }
+  }
+
+  it should "return table's max" in {
+    val t = MutableTable[Int](2, 2)
+    t.set(0,0,0)
+    t.set(0,1,10)
+    t.set(1,1,2)
+
+    t.max must be (10)
   }
 }

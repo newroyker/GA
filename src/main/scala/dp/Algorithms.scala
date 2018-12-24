@@ -1,6 +1,6 @@
 package dp
 
-import scala.collection.mutable.ArrayBuffer
+import common.{MutableRow, MutableTable}
 
 object Algorithms {
 
@@ -13,14 +13,13 @@ object Algorithms {
     if (n == 0) 0L
     else if (n == 1) 1L
     else {
-      var fi_2 = 0L
-      var fi_1 = 1L
-      for (_ <- 2 to n) {
-        val temp = fi_1
-        fi_1 = fi_1 + fi_2
-        fi_2 = temp
+      val fs = MutableRow[Long](n+1)
+      fs.set(0, 0L)
+      fs.set(1, 1L)
+      for (i <- 2 to n) {
+        fs.set(i, fs(i-1) + fs(i-2))
       }
-      fi_1
+      fs(n)
     }
 
   /**
@@ -29,14 +28,14 @@ object Algorithms {
     * O(nˆ2)
     */
   def lis(as: Seq[Int]): Int = {
-    val lis: ArrayBuffer[Int] = ArrayBuffer.empty[Int]
+    val lis = MutableRow[Int](as.size)
     for (i <- as.indices) {
       var max = 1
       for (j <- 0 to i) {
         if (as(j) < as(i) && lis(j) + 1 > max)
           max = 1 + lis(j)
       }
-      lis += max
+      lis.set(i,max)
     }
     lis.max
   }
@@ -49,19 +48,20 @@ object Algorithms {
     * O(nˆ2)
     */
   def lcs(xs: Seq[Char], ys: Seq[Char]): Int = {
-    val ls: ArrayBuffer[ArrayBuffer[Int]] =
-      ArrayBuffer.fill(xs.size + 1)(ArrayBuffer.fill(ys.size + 1)(0))
+    val ls = MutableTable[Int](xs.size + 1, ys.size + 1)
+    ls.fillCol(0, 0)
+    ls.fillRow(0, 0)
 
     for (i <- 1 to xs.size) {
       for (j <- 1 to ys.size) {
         if (xs(i - 1) == ys(j - 1))
-          ls(i)(j) = 1 + ls(i - 1)(j - 1)
+          ls.set(i, j, 1 + ls(i - 1, j - 1))
         else
-          ls(i)(j) = math.max(ls(i - 1)(j), ls(i)(j - 1))
+          ls.set(i, j, math.max(ls(i - 1, j), ls(i, j - 1)) )
       }
     }
 
-    ls(xs.size)(ys.size)
+    ls(xs.size, ys.size)
   }
 
   /**
@@ -70,12 +70,12 @@ object Algorithms {
     * O(n)
     */
   def csms(as: Seq[Int]): Int = {
-    val mis: ArrayBuffer[Int] = ArrayBuffer.empty[Int]
+    val mis = MutableRow[Int](as.size)
     for (i <- as.indices) {
       if (i == 0)
-        mis += as(i)
+        mis.set(i, as(i))
       else
-        mis += as(i) + math.max(mis(i - 1), 0)
+        mis.set(i, as(i) + math.max(mis(i - 1), 0))
     }
     mis.max
   }
@@ -88,21 +88,25 @@ object Algorithms {
     * O(nˆ2)
     */
   def sow(cs: Seq[Char], dict: Seq[Char] => Boolean): Boolean = {
-    val sis: ArrayBuffer[Boolean] = ArrayBuffer.empty[Boolean]
+    val sis = MutableRow[Boolean](cs.size)
 
     for (i <- cs.indices) {
-      if (i == 0) sis += dict(Seq(cs.head)) else {
+      if (i == 0)
+        sis.set(0, dict(Seq(cs.head)) )
+      else {
         var exists = false
         for (j <- 0 until i) {
           val word = cs.slice(j, i + 1)
-          if (j == 0) exists = dict(word) else {
+          if (j == 0)
+            exists = dict(word)
+          else {
             if (sis(j - 1) && dict(word)) exists = true
           }
         }
-        sis += exists
+        sis.set(i,exists)
       }
     }
-    sis.last
+    sis(cs.size-1)
   }
 
   /**
@@ -113,19 +117,20 @@ object Algorithms {
     * O(nˆ2)
     */
   def lccs(xs: Seq[Char], ys: Seq[Char]): Int = {
-    val ls: ArrayBuffer[ArrayBuffer[Int]] =
-      ArrayBuffer.fill(xs.size + 1)(ArrayBuffer.fill(ys.size + 1)(0))
+    val ls = MutableTable[Int](xs.size + 1, ys.size + 1)
+    ls.fillCol(0,0)
+    ls.fillRow(0,0)
 
     for (i <- 1 to xs.size) {
       for (j <- 1 to ys.size) {
         if (xs(i - 1) == ys(j - 1))
-          ls(i)(j) = 1 + ls(i - 1)(j - 1)
+          ls.set(i, j, 1 + ls(i - 1, j - 1))
         else
-          ls(i)(j) = 0
+          ls.set(i, j, 0)
       }
     }
 
-    ls.map(_.max).max
+    ls.max
   }
 
   /**
@@ -136,19 +141,21 @@ object Algorithms {
     * O(n*B)
     */
   def ksnr(ws: Seq[Int], vs: Seq[Int], bound: Int): Int = {
-    val ks: ArrayBuffer[ArrayBuffer[Int]] =
-      ArrayBuffer.fill(ws.size + 1)(ArrayBuffer.fill(bound + 1)(0))
+    val ks = MutableTable[Int](ws.size + 1, bound + 1)
+    ks.fillCol(0,0)
+    ks.fillRow(0,0)
 
     for(i <- 1 to ws.size){
       for(b <- 1 to bound){
-        ks(i)(b) =
+        ks.set(i, b,
           if(ws(i-1) <= b)
-            math.max(ks(i-1)(b-ws(i-1)) + vs(i-1), ks(i-1)(b))
+            math.max(ks(i-1, b-ws(i-1)) + vs(i-1), ks(i-1, b))
           else
-            ks(i-1)(b)
+            ks(i-1, b)
+        )
       }
     }
-    ks(ws.size)(bound)
+    ks(ws.size, bound)
   }
 
   /**
@@ -159,15 +166,15 @@ object Algorithms {
     * O(n*B)
     */
   def ksr(ws: Seq[Int], vs: Seq[Int], bound: Int): Int = {
-    val ks: ArrayBuffer[Int] = ArrayBuffer.fill(bound + 1)(0)
+    val ks = MutableRow[Int](bound+1)
+    ks.fill(0)
 
     for(b <- 0 to bound){
       for(i <- ws.indices){
         if(ws(i) <= b)
-          ks(b) = math.max(ks(b), vs(i) + ks(b - ws(i)))
+          ks.set(b, math.max(ks(b), vs(i) + ks(b - ws(i))))
       }
     }
     ks(bound)
   }
-
 }
