@@ -8,3 +8,5 @@
 * Longest Common Substring
 * Knapsack Repetition
 * Knapsack No Repetition 
+
+[![codecov](https://codecov.io/gh/newroyker/GA/branch/master/graph/badge.svg)](https://codecov.io/gh/newroyker/GA)
